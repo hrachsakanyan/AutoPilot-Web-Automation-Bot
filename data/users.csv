@@ -1,0 +1,4 @@
+username,password,expect,note
+tomsmith,SuperSecretPassword!,success,Public demo credentials printed on the login page
+tomsmith,wrong-password,failure,"Right user, wrong password"
+ghost,SuperSecretPassword!,failure,Unknown username
