@@ -13,7 +13,7 @@
 
 <br>
 
-> **Automate smarter. Wait explicitly. Fail safely.**
+> **Automate smarter. Wait explicitly. Fail safely.** 
 
 <br>
 
