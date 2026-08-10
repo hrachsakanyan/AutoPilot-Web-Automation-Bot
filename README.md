@@ -2,7 +2,7 @@
 
 # 🤖 AutoPilot
 
-### Web Automation Bot
+### Web Automation Bot 
 
 **A production-style Selenium automation project built for learning real-world browser automation.**
 
