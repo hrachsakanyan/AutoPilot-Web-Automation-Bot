@@ -1,79 +1,199 @@
-# AutoPilot — Web Automation Bot 🤖
+<div align="center">
 
-An educational Selenium project that drives a **public practice site** end to end:
-it logs into a sandbox, works through a dynamically-loading form, extracts a data
-table to CSV, takes screenshots along the way, and always shuts the browser down
-cleanly.
+# 🤖 AutoPilot
 
-Built to practise the parts of browser automation that actually break in real
-life: **explicit waits, page objects, retries, and error handling**.
+### Web Automation Bot
+
+**A production-style Selenium automation project built for learning real-world browser automation.**
+
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge\&logo=python\&logoColor=white)](#)
+[![Selenium](https://img.shields.io/badge/Selenium-4.x-43B02A?style=for-the-badge\&logo=selenium\&logoColor=white)](#)
+[![Pytest](https://img.shields.io/badge/Pytest-Tested-0A9EDC?style=for-the-badge\&logo=pytest\&logoColor=white)](#)
+[![License](https://img.shields.io/badge/License-Educational-lightgrey?style=for-the-badge)](#)
+
+<br>
+
+> **Automate smarter. Wait explicitly. Fail safely.**
+
+<br>
+
+</div>
 
 ---
 
-## ⚠️ Legal & ethical use
+## 🧭 Overview
 
-This project automates **only** [the-internet.herokuapp.com](https://the-internet.herokuapp.com),
-a playground published by Sauce Labs specifically for automation practice.
+**AutoPilot** is an educational Selenium project that drives a **public browser-automation practice site** end to end.
 
-- ❌ Never point this at real accounts, private data, or anyone else's site.
-- ❌ Never use it to solve CAPTCHAs, bypass rate limits, or work around a site's Terms of Service.
-- ✅ Only automate sites that explicitly permit it — practice sandboxes, demos, or systems you own.
+It demonstrates how to build reliable browser automation using:
 
-This is enforced in code, not just in the docs. Every navigation goes through
-`assert_allowed()` in [src/utils.py](src/utils.py), which raises `UnsafeTargetError`
-for any host outside the allow-list in [src/config.py](src/config.py):
+* 🧩 **Page Object Model**
+* ⏳ **Explicit waits**
+* 🔄 **Retry & backoff logic**
+* 🛡️ **Target allow-list security**
+* 📸 **Automatic screenshots**
+* 📊 **CSV data extraction**
+* 🧪 **Pytest browser & unit tests**
+* 🧹 **Clean browser shutdown**
+
+The goal isn't simply to make Selenium click buttons.
+
+The goal is to understand **why browser automation becomes flaky** and how to design around those problems.
+
+---
+
+## ⚡ What AutoPilot Can Do
+
+<table>
+<tr>
+<td width="33%" align="center">
+
+### 🔐 Login Flow
+
+Data-driven authentication testing with both valid and invalid credentials.
+
+</td>
+<td width="33%" align="center">
+
+### ⚙️ Dynamic Forms
+
+Handles dynamically changing elements using explicit waits.
+
+</td>
+<td width="33%" align="center">
+
+### 📊 Table Extraction
+
+Sorts a table and exports its contents directly to CSV.
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🏗️ Architecture
+
+```text
+                    ┌─────────────────────┐
+                    │      CLI / main     │
+                    │      src/main.py    │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+              ▼                ▼                ▼
+        ┌──────────┐     ┌──────────┐     ┌──────────┐
+        │  Login   │     │   Form   │     │  Table   │
+        │   Flow   │     │   Flow   │     │   Flow   │
+        └────┬─────┘     └────┬─────┘     └────┬─────┘
+             │                │                │
+             └────────────────┼────────────────┘
+                              ▼
+                    ┌─────────────────────┐
+                    │     Page Objects    │
+                    │      src/pages/     │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   Selenium WebDriver│
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    🌐 Practice Sandbox
+```
+
+---
+
+## ✨ Key Features
+
+| Feature                       | Description                                                       |
+| :---------------------------- | :---------------------------------------------------------------- |
+| 🧩 **Page Object Model**      | Locators and page interactions stay inside dedicated page classes |
+| ⏳ **Explicit Waits**          | No `time.sleep()` in the automation path                          |
+| 🔄 **Retry Logic**            | Exponential backoff around the complete run                       |
+| 🩹 **Self-Healing Click**     | Recovers from stale/intercepted elements                          |
+| 📸 **Screenshots**            | Captured on successful checkpoints and failures                   |
+| 🛡️ **Allow-List Guard**      | Blocks navigation to unauthorized hosts                           |
+| 🧪 **Automated Tests**        | Unit + real-browser Selenium tests                                |
+| 🌐 **Browser Auto-Selection** | Detects an installed browser with a compatible driver             |
+| 🧹 **Clean Shutdown**         | Browser closes inside `finally`, including interruptions          |
+| 📄 **CSV Support**            | Data-driven login cases and table extraction                      |
+
+---
+
+## 🔐 Safety First
+
+AutoPilot intentionally restricts navigation to approved hosts:
 
 ```python
-ALLOWED_HOSTS = frozenset({"the-internet.herokuapp.com", "localhost", "127.0.0.1"})
+ALLOWED_HOSTS = frozenset({
+    "the-internet.herokuapp.com",
+    "localhost",
+    "127.0.0.1"
+})
 ```
 
-The login credentials used here (`tomsmith` / `SuperSecretPassword!`) are printed
-on the sandbox's own login page — they are demo values, not a real account.
+Every navigation passes through:
+
+```text
+assert_allowed()
+       │
+       ▼
+   Is host allowed?
+      /      \
+    YES       NO
+     │         │
+     ▼         ▼
+ Navigate   UnsafeTargetError
+```
+
+This makes the safety policy part of the **implementation**, not just documentation.
+
+> ⚠️ **Use AutoPilot only against systems you own or sites that explicitly permit automation.**
+
+Never use it to:
+
+* bypass CAPTCHAs
+* bypass rate limits
+* access private accounts
+* automate unauthorized targets
+* circumvent Terms of Service
 
 ---
 
-## Features
+## 📁 Project Structure
 
-| Flow | What it does |
-| --- | --- |
-| `login` | Data-driven logins from a CSV (valid **and** invalid cases), asserts each result against `expect`, screenshots both outcomes, logs out |
-| `form` | Removes a checkbox and enables a disabled input on a page where each action takes ~3s behind a spinner — pure explicit-wait territory |
-| `table` | Sorts a data table by clicking a column header, extracts every row, writes `output/table_data.csv` |
-
-Under the hood:
-
-- **Page Object Model** — one class per page, locators kept out of the flow code
-- **Explicit waits everywhere** — not a single `time.sleep()` in the automation path
-- **Headless mode** — `--headless`
-- **Data-driven runs** — [data/users.csv](data/users.csv)
-- **Retry logic** — exponential backoff around the whole run, plus a self-healing
-  click for stale/intercepted elements
-- **Screenshots** — timestamped, on success and automatically on failure
-- **Clean shutdown** — the browser is closed in a `finally` block, even on Ctrl-C
-- **Browser auto-selection** — picks an installed browser whose driver version
-  actually matches it (see [Known issue](#known-issue-mismatched-chromedriver))
-
----
-
-## Project structure
-
-```
+```text
 autopilot/
-├── src/
-│   ├── main.py                  # CLI + the three flows
-│   ├── config.py                # settings, paths, host allow-list
-│   ├── utils.py                 # driver factory, logging, retries, CSV, screenshots
-│   ├── exceptions.py            # AutoPilotError and friends
-│   └── pages/                   # page objects
-│       ├── base_page.py         # waits + interactions every page inherits
+│
+├── 📂 src/
+│   ├── main.py
+│   ├── config.py
+│   ├── utils.py
+│   ├── exceptions.py
+│   │
+│   └── 📂 pages/
+│       ├── base_page.py
 │       ├── login_page.py
 │       ├── secure_area_page.py
 │       ├── dynamic_controls_page.py
 │       └── tables_page.py
-├── tests/                       # pytest: 15 unit + 9 browser tests
-├── data/users.csv               # login cases for the data-driven flow
-├── screenshots/                 # PNG output (git-ignored)
-├── output/                      # CSV output (git-ignored)
+│
+├── 📂 tests/
+│   └── 24 automated tests
+│
+├── 📂 data/
+│   └── users.csv
+│
+├── 📂 screenshots/
+│   └── *.png
+│
+├── 📂 output/
+│   ├── table_data.csv
+│   └── login_results.csv
+│
 ├── requirements.txt
 ├── pytest.ini
 └── README.md
@@ -81,70 +201,310 @@ autopilot/
 
 ---
 
-## Setup
+## 🔄 Automation Flows
 
-Requires **Python 3.10+** and Chrome, Edge, or Firefox.
+### 🔐 Login
+
+```text
+users.csv
+    │
+    ▼
+Read test case
+    │
+    ▼
+Open login page
+    │
+    ▼
+Enter credentials
+    │
+    ▼
+Submit
+   / \
+  /   \
+ ✓     ✗
+ │     │
+ ▼     ▼
+Success Failure
+ │     │
+ └──┬──┘
+    ▼
+Screenshot
+    │
+    ▼
+Logout
+```
+
+### ⚙️ Dynamic Controls
+
+```text
+Open page
+    │
+    ▼
+Remove checkbox
+    │
+    ▼
+Wait for actual end state
+    │
+    ▼
+Checkbox disappears
+    │
+    ▼
+Enable input
+    │
+    ▼
+Wait until input.is_enabled()
+```
+
+### 📊 Table Extraction
+
+```text
+Open table
+    │
+    ▼
+Click "Last Name"
+    │
+    ▼
+Wait for sorted state
+    │
+    ▼
+Extract rows
+    │
+    ▼
+Convert → CSV
+    │
+    ▼
+output/table_data.csv
+```
+
+---
+
+## 🧠 What I Practised
+
+This project was built to understand the parts of Selenium that tend to cause **real-world flakiness**.
+
+### Selenium
+
+* Locators
+* `WebDriver`
+* `WebElement`
+* Explicit waits
+* `expected_conditions`
+* Browser lifecycle
+
+### Software Design
+
+* Page Object Model
+* Separation of concerns
+* Reusable utilities
+* Configuration management
+* Custom exceptions
+
+### Reliability
+
+* Retry strategies
+* Exponential backoff
+* Stale element recovery
+* Failure screenshots
+* Deterministic waiting
+
+### Testing
+
+* `pytest`
+* Unit tests
+* Browser integration tests
+* Offline test execution
+* Test markers
+
+---
+
+## 🐛 Real Problems I Solved
+
+### 1. Waiting for the Wrong Thing
+
+The dynamic-controls page displays a spinner while enabling the input.
+
+The obvious implementation was:
+
+```text
+wait until spinner disappears
+```
+
+But the spinner never actually disappears.
+
+The correct approach was:
+
+```text
+Don't wait for the decoration.
+
+Wait for the state you actually need.
+                ↓
+        input.is_enabled()
+```
+
+---
+
+### 2. The Old Page Was Still on Screen
+
+Navigation could return before the previous document was completely replaced.
+
+That created a subtle race:
+
+```text
+driver.get()
+     │
+     ▼
+old document still rendered
+     │
+     ▼
+click / type
+     │
+     ▼
+new document commits
+     │
+     ▼
+interaction silently disappears
+```
+
+`BasePage.navigate()` solves this by waiting for the previous `<html>` element to become stale before interacting with the new page.
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run everything
+pytest
+
+# Fast offline unit tests
+pytest -m "not web"
+
+# Watch browser tests
+pytest --headed
+```
+
+**24 tests**
+
+* 15 unit tests
+* 9 browser tests
+
+Coverage includes:
+
+* Allow-list security
+* Retry decorator
+* CSV round-trips
+* Configuration validation
+* Valid login
+* Invalid password
+* Unknown user
+* Logout
+* Dynamic controls
+* Table sorting
+* Table extraction
+
+---
+
+## 🚀 Quick Start
+
+### 1. Clone
 
 ```bash
 git clone <your-repo-url>
 cd autopilot
+```
 
+### 2. Create virtual environment
+
+```bash
 python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# macOS / Linux
-source .venv/bin/activate
+```
 
+### 3. Activate
+
+**Windows**
+
+```bash
+.venv\Scripts\activate
+```
+
+**macOS / Linux**
+
+```bash
+source .venv/bin/activate
+```
+
+### 4. Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-**No manual driver download needed.** Selenium 4.6+ ships Selenium Manager, which
-fetches the matching driver automatically; `webdriver-manager` is wired in as a
-fallback if that ever fails.
+### 5. Run
+
+```bash
+python -m src.main
+```
 
 ---
 
-## Usage
+## 🎛️ CLI
+
+```text
+--flow       login | form | table | all
+--browser    auto | chrome | edge | firefox
+--headless   Run without a visible browser
+--timeout    Explicit wait timeout
+--retries    Number of retry attempts
+--users      Path to login CSV
+```
+
+Examples:
 
 ```bash
-# everything, visible browser
+# Run everything
 python -m src.main
 
-# one flow, headless
+# Run table flow headlessly
 python -m src.main --flow table --headless
 
-# pick a browser explicitly
+# Use Edge
 python -m src.main --browser edge
 
-# more patience on a slow connection, more retries
+# Increase timeout and retries
 python -m src.main --timeout 20 --retries 3
 
-# your own login cases
+# Custom login cases
 python -m src.main --flow login --users data/users.csv
 ```
 
-| Flag | Default | Meaning |
-| --- | --- | --- |
-| `--flow` | `all` | `login`, `form`, `table` or `all` |
-| `--browser` | `auto` | `auto`, `chrome`, `edge`, `firefox` |
-| `--headless` | off | run without a visible window |
-| `--timeout` | `10` | explicit-wait budget in seconds |
-| `--retries` | `2` | extra attempts before giving up |
-| `--users` | `data/users.csv` | CSV of login cases |
+---
 
-### Sample output
+## 📸 Screenshots
 
+AutoPilot captures timestamped screenshots during important checkpoints:
+
+| Screenshot                        | Purpose                    |
+| :-------------------------------- | :------------------------- |
+| `*_login-1-success.png`           | Successful authentication  |
+| `*_login-2-failure.png`           | Rejected credentials       |
+| `*_dynamic-controls-before.png`   | Initial form state         |
+| `*_dynamic-controls-after.png`    | Final form state           |
+| `*_table-sorted-by-last-name.png` | Sorted table               |
+| `*_FAILED-<test>.png`             | Automatic failure evidence |
+
+---
+
+## 📤 Generated Output
+
+### Login Results
+
+```csv
+case,username,expected,outcome,matched,message
+1,tomsmith,success,success,yes,...
+2,tomsmith,failure,failure,yes,...
+3,ghost,failure,failure,yes,...
 ```
-19:06:23 | INFO | autopilot.LoginPage    | Logging in as 'tomsmith'
-19:06:23 | INFO | autopilot.LoginPage    | Login succeeded
-19:06:27 | INFO | autopilot.main         | Case 2: got failure, expected failure -> OK
-19:06:33 | INFO | autopilot.DynamicCon.. | Checkbox gone — site says "It's gone!"
-19:06:38 | INFO | autopilot.DynamicCon.. | Input enabled — site says "It's enabled!"
-19:06:43 | INFO | autopilot.utils        | Wrote 4 row(s) -> table_data.csv
-19:06:46 | INFO | autopilot.utils        | Browser closed cleanly
-```
 
-`output/table_data.csv`:
+### Table Data
 
 ```csv
 Last Name,First Name,Email,Due,Web Site,Action
@@ -154,91 +514,34 @@ Doe,Jason,jdoe@hotmail.com,$100.00,http://www.jdoe.com,edit delete
 Smith,John,jsmith@gmail.com,$50.00,http://www.jsmith.com,edit delete
 ```
 
-`output/login_results.csv`:
+---
 
-```csv
-case,username,expected,outcome,matched,message
-1,tomsmith,success,success,yes,Welcome to the Secure Area. When you are done click logout below.
-2,tomsmith,failure,failure,yes,Your password is invalid!
-3,ghost,failure,failure,yes,Your username is invalid!
+## ⚠️ Known Issue
+
+Chromium-based browsers can occasionally experience problems when the browser and driver patch versions don't match.
+
+AutoPilot therefore supports:
+
+```text
+--browser auto
 ```
 
----
+The automatic selection attempts to use an installed browser with a compatible driver and skips problematic combinations.
 
-## Screenshots
-
-Each run drops timestamped PNGs in `screenshots/`:
-
-| File | When |
-| --- | --- |
-| `*_login-1-success.png` | after reaching the secure area |
-| `*_login-2-failure.png` | the rejected-credentials banner |
-| `*_dynamic-controls-before/after.png` | before and after the waits |
-| `*_table-sorted-by-last-name.png` | the sorted table that was extracted |
-| `*_FAILED-<test name>.png` | automatically, whenever a browser test fails |
-
----
-
-## Tests
+You can also force a browser:
 
 ```bash
-pytest                 # everything (needs a browser + network)
-pytest -m "not web"    # unit tests only — fast, offline
-pytest --headed        # watch the browser tests run
+python -m src.main --browser chrome
 ```
-
-24 tests: the allow-list guard, the retry decorator, CSV round-trips and settings
-validation offline; login (valid, wrong password, unknown user, logout), dynamic
-controls, and table extraction/sorting in a real browser.
 
 ---
 
-## Two real bugs this project ran into
+<div align="center">
 
-Worth writing down, because both are the kind of thing that makes automation
-"randomly flaky" until you find them.
+## 🤖 AutoPilot
 
-**1. Waiting on the wrong thing.** The dynamic-controls page shows a spinner while
-enabling its text field, so the obvious wait is "spinner disappears". That wait
-hangs forever — the site never hides that particular spinner, it just enables the
-input underneath it. The fix is the rule this whole project follows: **wait for
-the end state you actually care about** (`input.is_enabled()`), never for a
-decoration that happens to correlate with it.
+**Reliable browser automation starts with reliable waits.**
 
-**2. The old page is still on screen.** `driver.get()` and `element.click()` can
-return while the previous document is still rendered — most visibly when you
-navigate to the URL the browser is already on. Anything typed or clicked in that
-gap is silently discarded when the new document commits. `BasePage.navigate()`
-closes the race by waiting for the old `<html>` element to go stale before
-touching the new page.
+Built with 🐍 Python + Selenium
 
----
-
-## Known issue: mismatched chromedriver
-
-A Chromium driver whose version does not match its browser **exactly** can start
-up perfectly and then quietly stop delivering clicks and keystrokes after the
-first page change — no exception, elements just never react.
-
-Seen on the machine this was built on:
-
-```
-Chrome  150.0.7871.188   +   chromedriver 150.0.7871.124   ->  broken input
-Edge    151.0.4129.59    +   msedgedriver 151.0.4129.59    ->  fine
-```
-
-This happens when Chrome auto-updates to a patch release before a matching
-chromedriver is published. That is why `--browser auto` is the default: it starts
-the first installed browser whose driver version matches it exactly, logs a
-warning about any it skips, and only falls back if nothing matches. Force a
-specific browser with `--browser chrome` if you want the raw behaviour.
-
----
-
-## What I practised
-
-- Selenium locators, explicit waits, and the `expected_conditions` vocabulary
-- Structuring automation with the Page Object Model instead of one long script
-- Telling "the page is slow" apart from "the page is broken" in error handling
-- Retries with backoff, and why a self-healing click is worth having
-- Building a safety guard into the code so the tool can't be aimed somewhere it shouldn't be
+</div>
