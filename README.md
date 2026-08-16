@@ -319,7 +319,7 @@ This project was built to understand the parts of Selenium that tend to cause **
 
 ## 🐛 Real Problems I Solved
 
-### 1. Waiting for the Wrong Thing
+### 1. Waiting for the Wrong Thing 
 
 The dynamic-controls page displays a spinner while enabling the input.
 
